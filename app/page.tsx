@@ -1,24 +1,17 @@
-"use client";
-
-import { useTelegram } from "@/context/TelegramContext";
-
 export default function Home() {
-  const { user, isLoading } = useTelegram();
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!user) {
-    return <div>Please open this app through Telegram</div>;
-  }
-
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm">
-        <h1>Welcome, {user.first_name}!</h1>
-        <p>Your Telegram ID: {user.id}</p>
-        {user.username && <p>Username: @{user.username}</p>}
+    <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-gray-50">
+      <div className="text-center space-y-6">
+        <h1 className="text-4xl font-bold text-gray-800">Welcome!</h1>
+        <p className="text-gray-600">Get started with your journey</p>
+        <button
+          className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium
+                     hover:bg-blue-700 transition-colors duration-200
+                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          onClick={() => console.log("Button clicked")}
+        >
+          Get Started
+        </button>
       </div>
     </main>
   );
