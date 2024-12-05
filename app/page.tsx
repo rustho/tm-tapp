@@ -1,25 +1,62 @@
 "use client";
 
+import { Section, Cell, Image, List } from "@telegram-apps/telegram-ui";
+import { useTranslations } from "next-intl";
+
+import { Link } from "../components/Link/Link";
+import { LocaleSwitcher } from "../components/LocaleSwitcher/LocaleSwitcher";
+import { Page } from "../components/Page";
+
+import tonSvg from "./_assets/ton.svg";
+
 export default function Home() {
-  const handleClick = () => {
-    console.log("Button clicked");
-    // Add any additional interactivity here
-  };
+  const t = useTranslations("i18n");
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-gray-50">
-      <div className="text-center space-y-6">
-        <h1 className="text-4xl font-bold text-gray-800">Welcome!</h1>
-        <p className="text-gray-600">Get started with your journey</p>
-        <button
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium
-                     hover:bg-blue-700 transition-colors duration-200
-                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          onClick={handleClick}
+    <Page back={false}>
+      <List>
+        <Section
+          header="Features"
+          footer="You can use these pages to learn more about features, provided by Telegram Mini Apps and other useful projects"
         >
-          Get Started
-        </button>
-      </div>
-    </main>
+          <Link href="/ton-connect">
+            <Cell
+              before={
+                <Image
+                  src={tonSvg.src}
+                  style={{ backgroundColor: "#007AFF" }}
+                />
+              }
+              subtitle="Connect your TON wallet"
+            >
+              TON Connect
+            </Cell>
+          </Link>
+        </Section>
+        <Section
+          header="Application Launch Data"
+          footer="These pages help developer to learn more about current launch information"
+        >
+          <Link href="/init-data">
+            <Cell subtitle="User data, chat information, technical data">
+              Init Data
+            </Cell>
+          </Link>
+          <Link href="/launch-params">
+            <Cell subtitle="Platform identifier, Mini Apps version, etc.">
+              Launch Parameters
+            </Cell>
+          </Link>
+          <Link href="/theme-params">
+            <Cell subtitle="Telegram application palette information">
+              Theme Parameters
+            </Cell>
+          </Link>
+        </Section>
+        <Section header={t("header")} footer={t("footer")}>
+          <LocaleSwitcher />
+        </Section>
+      </List>
+    </Page>
   );
 }
