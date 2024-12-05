@@ -1,12 +1,12 @@
-import { WebApp } from "@twa-dev/types";
+import { Telegram } from "@twa-dev/types";
 
 declare global {
   interface Window {
-    Telegram: WebApp;
+    Telegram: Telegram;
   }
 }
 
-export const tg = typeof window !== "undefined" ? window.Telegram : null;
+export const tg = typeof window !== "undefined" ? window.Telegram.WebApp : null;
 
 export const initTelegramApp = () => {
   if (tg) {

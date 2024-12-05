@@ -27,7 +27,7 @@ export function TelegramProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     initTelegramApp();
-    const initData = window.Telegram.initData;
+    const initData = window.Telegram.WebApp.initData;
 
     fetch("/api/auth", {
       method: "POST",
