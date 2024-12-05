@@ -1,4 +1,4 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto-js";
 
 const BOT_TOKEN = process.env.BOT_TOKEN;
@@ -28,28 +28,27 @@ function validateTelegramWebAppData(initData: string) {
   return calculatedHash === hash;
 }
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method not allowed" });
-  }
-
-  const { initData } = req.body;
-
+export async function POST(request: NextRequest) {
   try {
+    const { initData } = await request.json();
+
     const isValid = validateTelegramWebAppData(initData);
     if (!isValid) {
-      return res.status(401).json({ message: "Invalid authentication" });
+      return NextResponse.json(
+        { message: "Invalid authentication" },
+        { status: 401 }
+      );
     }
 
     const data = new URLSearchParams(initData);
     const user = JSON.parse(data.get("user") || "{}");
 
-    return res.status(200).json({ user });
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (_error) {
-    return res.status(401).json({ message: "Invalid authentication" });
+    return NextResponse.json({ user });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Invalid authentication" },
+      { status: 401 }
+    );
   }
 }
