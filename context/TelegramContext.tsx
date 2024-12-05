@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { initTelegramApp } from "@/utils/telegram";
+import { initTelegramApp, tg } from "@/utils/telegram";
 
 type TelegramUser = {
   id: number;
@@ -27,21 +27,11 @@ export function TelegramProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     initTelegramApp();
-    const initData = window.Telegram.WebApp.initData;
 
-    fetch("/api/auth", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ initData }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setUser(data.user);
-        setIsLoading(false);
-      })
-      .catch(() => {
-        setIsLoading(false);
-      });
+    if (tg?.initDataUnsafe?.user) {
+      setUser(tg.initDataUnsafe.user);
+    }
+    setIsLoading(false);
   }, []);
 
   return (
