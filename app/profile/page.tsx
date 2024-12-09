@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import {
   Section,
@@ -9,18 +9,21 @@ import {
   ButtonCell,
   Button,
 } from "@telegram-apps/telegram-ui";
+import { initData, useSignal } from "@telegram-apps/sdk-react";
 
 interface ProfileData {
   name: string;
-  email: string;
+  nickname: string;
   bio: string;
 }
 
 export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
+  const initDataState = useSignal(initData.state);
+  const user = useMemo(() => initDataState?.user, [initDataState]);
   const [profile, setProfile] = useState<ProfileData>({
-    name: "John Doe",
-    email: "john@example.com",
+    name: user?.firstName + " " + user?.lastName || "John Doe",
+    nickname: user?.username || "@JohnDoe",
     bio: "Frontend developer passionate about React and TypeScript",
   });
 
@@ -51,7 +54,7 @@ export default function Profile() {
               {profile.name}
             </Cell>
             <Cell before={<span className="font-semibold">Email:</span>}>
-              {profile.email}
+              {profile.nickname}
             </Cell>
             <Cell before={<span className="font-semibold">Bio:</span>}>
               {profile.bio}
@@ -99,7 +102,7 @@ export default function Profile() {
               <Input
                 header="Email"
                 placeholder="Enter your email"
-                {...register("email")}
+                {...register("nickname")}
               />
               <Input
                 header="Bio"
