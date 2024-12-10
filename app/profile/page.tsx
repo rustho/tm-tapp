@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
   Section,
@@ -27,13 +27,50 @@ export default function Profile() {
     bio: "Frontend developer passionate about React and TypeScript",
   });
 
+  useEffect(() => {
+    if (user?.id) {
+      fetch(`/api/profile?telegramId=${user.id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.name) {
+            setProfile(data);
+          } else {
+            setProfile({
+              name: user.firstName + " " + user.lastName || "John Doe",
+              nickname: user.username || "@JohnDoe",
+              bio: "Frontend developer passionate about React and TypeScript",
+            });
+          }
+        });
+    }
+  }, [user]);
+
   const { register, handleSubmit, reset } = useForm<ProfileData>({
     defaultValues: profile,
   });
 
-  const onSubmit = (data: ProfileData) => {
-    setProfile(data);
-    setIsEditing(false);
+  const onSubmit = async (data: ProfileData) => {
+    console.log(data);
+    if (user?.id) {
+      try {
+        const response = await fetch("/api/profile", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            telegramId: user.id,
+            ...data,
+          }),
+        });
+
+        const updatedProfile = await response.json();
+        setProfile(updatedProfile);
+        setIsEditing(false);
+      } catch (error) {
+        console.error("Failed to update profile:", error);
+      }
+    }
   };
 
   const handleCancel = () => {
@@ -86,6 +123,7 @@ export default function Profile() {
                 <Button
                   type="submit"
                   className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  onClick={handleSubmit(onSubmit)}
                 >
                   Save Changes
                 </Button>
@@ -93,7 +131,7 @@ export default function Profile() {
             }
             header="Edit Profile"
           >
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <form className="space-y-4">
               <Input
                 header="Name"
                 placeholder="Enter your name"
